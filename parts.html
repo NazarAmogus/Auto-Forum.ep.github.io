@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AutoGuide | Пособия по эксплуатации</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="parts.css">
+</head>
+<body>
+
+  <div class="video-bg">
+    <video autoplay muted loop id="bg-video">
+      <source src="video/Bugati.mp4" type="video/mp4">
+      Ваш браузер не поддерживает видео.
+    </video>
+    <div class="video-overlay"></div>
+  </div>
+
+  
+  <header class="main-header">
+    <div class="header-content">
+      <div class="logo">
+        <span class="logo-icon"><i class="fas fa-car-side"></i></span>
+        <span class="logo-text">AutoForum</span>
+      </div>
+      <a href="index.html" class="nav-link">
+        <span class="link-icon"><i class="fas fa-home"></i></span>
+        <span class="link-text">На главную</span>
+      </a>
+    </div>
+  </header>
+
+  
+  <main class="content-wrapper">
+    <div class="content-container">
+      <h1 class="main-title">
+        <span class="title-line">Эксплуатационные</span>
+        <span class="title-line">советы</span>
+      </h1>
+      
+      <div class="guide-cards">
+     
+      </div>
+    </div>
+  </main>
+
+ 
+  <footer class="main-footer">
+    <div class="footer-content">
+      <p class="copyright">© 2025 AutoForum. Все права защищены.</p>
+    </div>
+  </footer>
+
+
+  <script>
+   
+    const cardsData = [
+      {
+        icon: "fas fa-cogs",
+        title: "Двигатель",
+        desc: "Полное руководство по обслуживанию и ремонту",
+        modalId: "modal-engine",
+        items: [
+          "Проверяйте уровень масла каждые 5000 км",
+          "Заменяйте масло каждые 10 000 км",
+          "Следите за состоянием ремня ГРМ",
+          "Проверяйте фильтры и охлаждающую жидкость"
+        ]
+      },
+      {
+        icon: "fas fa-car-side",
+        title: "Ходовая часть",
+        desc: "Диагностика и обслуживание подвески",
+        modalId: "modal-suspension",
+        items: [
+          "Осматривайте амортизаторы на наличие подтёков",
+          "Проверяйте люфт в шаровых опорах",
+          "Следите за уровнем жидкости в ГУР",
+          "Меняйте резинки стабилизаторов при износе"
+        ]
+      },
+      {
+        icon: "fas fa-fire",
+        title: "Выхлопная система",
+        desc: "Оптимизация и ремонт выхлопа",
+        modalId: "modal-exhaust",
+        items: [
+          "Проверяйте герметичность соединений",
+          "Следите за целостностью глушителя",
+          "Осматривайте катализатор",
+          "Своевременно удаляйте сажу и нагар"
+        ]
+      },
+      {
+        icon: "fas fa-bolt",
+        title: "Электроника",
+        desc: "Диагностика электрических систем",
+        modalId: "modal-electronics",
+        items: [
+          "Проверяйте состояние аккумулятора",
+          "Следите за работой ЭБУ",
+          "Проверяйте предохранители",
+          "Чистите разъёмы от окислов"
+        ]
+      }
+    ];
+
+   
+    const guideCards = document.querySelector('.guide-cards');
+    
+    cardsData.forEach((card, index) => {
+      const cardHTML = `
+        <div class="guide-card" data-modal="${card.modalId}">
+          <div class="card-icon"><i class="${card.icon}"></i></div>
+          <h2 class="card-title">${card.title}</h2>
+          <p class="card-desc">${card.desc}</p>
+          <button class="card-button">
+            <span>Подробнее</span>
+            <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+      `;
+      guideCards.insertAdjacentHTML('beforeend', cardHTML);
+    });
+
+    
+    document.addEventListener('click', (e) => {
+    
+      if (e.target.closest('.guide-card')) {
+        const card = e.target.closest('.guide-card');
+        const modalId = card.getAttribute('data-modal');
+        const modal = document.getElementById(modalId);
+        
+       
+        if (!modal) {
+          const cardData = cardsData.find(c => c.modalId === modalId);
+          
+          const modalHTML = `
+            <div class="modal" id="${modalId}">
+              <div class="modal-dialog">
+                <button class="modal-close"><i class="fas fa-times"></i></button>
+                <div class="modal-header">
+                  <div class="modal-icon"><i class="${cardData.icon}"></i></div>
+                  <h3>${cardData.title}</h3>
+                </div>
+                <div class="modal-body">
+                  <ul class="guide-list">
+                    ${cardData.items.map(item => `<li><span>${item}</span></li>`).join('')}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          `;
+          
+          document.body.insertAdjacentHTML('beforeend', modalHTML);
+        }
+        
+        document.getElementById(modalId).classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+      
+      
+      if (e.target.closest('.modal-close') || e.target.classList.contains('modal')) {
+        document.querySelector('.modal.active').classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+
+:root {
+  --primary: #8a2be2;
+  --primary-light: #c77dff;
+  --white: #ffffff;
+  --gray: #e0e0e0;
+  --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  color: var(--white);
+  height: 100vh;
+  overflow: hidden;
+}
+
+
+.bg-image {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('images/F1.jpg') no-repeat center center;
+  background-size: cover;
+  filter: brightness(0.4);
+  z-index: -1;
+}
+
+
+.error-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 2rem;
+}
+
+.error-content {
+  background: rgba(18, 18, 18, 0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 3rem;
+  text-align: center;
+  max-width: 500px;
+  width: 100%;
+  border: 1px solid rgba(138, 43, 226, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.error-code {
+  font-size: 5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: var(--primary-light);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.error-code i {
+  font-size: 3.5rem;
+  color: var(--white);
+}
+
+.error-title {
+  font-size: 1.8rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+}
+
+.error-message {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--gray);
+  margin-bottom: 2rem;
+  font-weight: 300;
+}
+
+.home-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.9rem 2rem;
+  background: var(--primary);
+  color: var(--white);
+  text-decoration: none;
+  border-radius: 50px;
+  font-weight: 500;
+  transition: var(--transition);
+  border: none;
+  cursor: pointer;
+}
+
+.home-button:hover {
+  background: var(--primary-light);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(138, 43, 226, 0.4);
+}
+
+
+@media (max-width: 768px) {
+  .error-content {
+    padding: 2rem;
+  }
+  
+  .error-code {
+    font-size: 4rem;
+  }
+  
+  .error-code i {
+    font-size: 2.5rem;
+  }
+  
+  .error-title {
+    font-size: 1.5rem;
+  }
+  
+  .error-message {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .error-content {
+    padding: 1.5rem;
+  }
+  
+  .error-code {
+    font-size: 3rem;
+  }
+  
+  .home-button {
+    padding: 0.7rem 1.5rem;
+    font-size: 0.9rem;
+  }
+}

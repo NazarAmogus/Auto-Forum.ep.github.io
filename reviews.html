@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Отзывы об автомобилях | AutoForum</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #8a2be2;
+      --primary-dark: #5a189a;
+      --primary-light: #c77dff;
+      --black: #121212;
+      --black-light: #1e1e1e;
+      --white: #ffffff;
+      --gray: #e0e0e0;
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--black);
+      color: var(--white);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .video-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      overflow: hidden;
+    }
+
+    #bg-video {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      transform: translate(-50%, -50%);
+      object-fit: cover;
+      filter: brightness(0.3);
+    }
+
+    .video-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, 
+        rgba(18, 18, 18, 0.9) 0%, 
+        rgba(18, 18, 18, 0.95) 100%);
+      z-index: -1;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    
+    .main-header {
+      position: sticky;
+      top: 0;
+      background: rgba(18, 18, 18, 0.8);
+      backdrop-filter: blur(10px);
+      padding: 1.5rem 0;
+      border-bottom: 1px solid rgba(138, 43, 226, 0.2);
+      z-index: 100;
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--white);
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      color: var(--primary);
+      font-size: 1.8rem;
+    }
+
+    .main-nav {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .nav-link {
+      color: var(--gray);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      transition: var(--transition);
+    }
+
+    .nav-link:hover {
+      color: var(--white);
+      background: rgba(138, 43, 226, 0.1);
+    }
+
+    .nav-link.active {
+      color: var(--white);
+      background: rgba(138, 43, 226, 0.3);
+    }
+
+    /* Main Content */
+    .page-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin: 3rem 0 2rem;
+      text-align: center;
+      color: var(--primary-light);
+    }
+
+    .reviews-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .review-card {
+      background: rgba(30, 30, 30, 0.7);
+      border-radius: 16px;
+      padding: 2rem;
+      border: 1px solid rgba(138, 43, 226, 0.2);
+      transition: var(--transition);
+      backdrop-filter: blur(5px);
+    }
+
+    .review-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(138, 43, 226, 0.2);
+      border-color: var(--primary);
+    }
+
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      align-items: center;
+    }
+
+    .review-car {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--primary-light);
+    }
+
+    .review-rating {
+      color: gold;
+      font-size: 1.1rem;
+    }
+
+    .review-meta {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      color: var(--gray);
+      font-size: 0.9rem;
+    }
+
+    .review-author {
+      font-style: italic;
+    }
+
+    .review-date {
+      opacity: 0.8;
+    }
+
+    .review-text {
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+    }
+
+    .review-images {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .review-image {
+      width: 100%;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 8px;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+
+    .review-image:hover {
+      transform: scale(1.05);
+    }
+
+    /* Footer */
+    .main-footer {
+      background: rgba(18, 18, 18, 0.8);
+      padding: 2rem 0;
+      margin-top: 3rem;
+      border-top: 1px solid rgba(138, 43, 226, 0.1);
+    }
+
+    .footer-content {
+      text-align: center;
+    }
+
+    .copyright {
+      color: var(--gray);
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .social-icons {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+    }
+
+    .social-icon {
+      color: var(--gray);
+      font-size: 1.2rem;
+      transition: var(--transition);
+    }
+
+    .social-icon:hover {
+      color: var(--primary-light);
+      transform: translateY(-3px);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .reviews-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .page-title {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Video Background -->
+  <div class="video-bg">
+    <video autoplay muted loop id="bg-video">
+      <source src="video/FON.mp" type="video/mp4">
+    </video>
+    <div class="video-overlay"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="main-header">
+    <div class="container">
+      <div class="header-content">
+        <a href="/" class="logo">
+          <i class="fas fa-car logo-icon"></i>
+          <span>AutoForum</span>
+        </a>
+        <nav class="main-nav">
+          <a href="index.html" class="nav-link">Главная</a>
+     
+        
+       
+        </nav>
+      </div>
+    </div>
+  </header>
+
+
+  <main class="container">
+    <h1 class="page-title">Отзывы владельцев</h1>
+    
+    <div class="reviews-container" id="reviews-container">
+      
+      <div class="review-card">
+        <div class="review-header">
+          <div class="review-car">BMW M5 Competition</div>
+          <div class="review-rating">★★★★★</div>
+        </div>
+        <div class="review-meta">
+          <span class="review-author">Александр К.</span>
+          <span class="review-date">15.05.2023</span>
+        </div>
+        <div class="review-text">
+          Идеальный автомобиль для тех, кто ценит динамику и комфорт. Разгон до 100 за 3.3 секунды - это невероятные ощущения! 
+          Расход топлива в городе около 15л, по трассе 8-9л. Салон на высшем уровне, все продумано до мелочей.
+        </div>
+        <div class="review-images">
+          <img src="images/5X.webp" alt="Lexus RX" class="review-image">
+          <img src="images/SALON.webp" alt="Lexus RX салон" class="review-image">
+          <img src="images/456x342.webp" alt="Lexus RX салон" class="review-image">
+        </div>
+      </div>
+
+    
+      <div class="review-card">
+        <div class="review-header">
+          <div class="review-car">Mercedes-Benz E-Class</div>
+          <div class="review-rating">★★★☆☆</div>
+        </div>
+        <div class="review-meta">
+          <span class="review-author">Елена В.</span>
+          <span class="review-date">22.04.2023</span>
+        </div>
+        <div class="review-text">
+          Прекрасный бизнес-седан с хорошим уровнем комфорта. Подвеска конечно остовляет желать лучшего. 
+          Из минусов - дорогое обслуживание и слабоватая динамика в базовой комплектации. Рекомендую брать с более мощным мотором.
+        </div>
+        <div class="review-images">
+          <img src="images/1200.webp" alt="Lexus RX" class="review-image">
+          <img src="images/BOJ.webp" alt="Lexus RX салон" class="review-image">
+          <img src="images/MERS.webp" alt="Lexus RX вид сбоку" class="review-image">
+        </div>
+      </div>
+
+      
+      <div class="review-card">
+        <div class="review-header">
+          <div class="review-car">Audi RS6 Avant</div>
+          <div class="review-rating">★★★★★</div>
+        </div>
+        <div class="review-meta">
+          <span class="review-author">Дмитрий С.</span>
+          <span class="review-date">10.03.2023</span>
+        </div>
+        <div class="review-text">
+          Это не просто универсал, это ракета на колесах! 600 л.с. в кузове универсала - мечта для семьи с детьми, которая любит скорость. 
+          Багажник огромный, динамика суперкаровская. Расход, конечно, соответствующий - в городе до 20л при активной езде.
+        </div>
+        <div class="review-images">
+          <img src="images/999999999999.webp" alt="Lexus RX" class="review-image">
+          <img src="images/huhuhuhuhuhuhu.jpg" alt="Lexus RX салон" class="review-image">
+          <img src="images/7.jpg" alt="Lexus RX вид сбоку" class="review-image">
+        </div>
+      </div>
+
+     
+      <div class="review-card">
+        <div class="review-header">
+          <div class="review-car">Toyota Camry</div>
+          <div class="review-rating">★★★★☆</div>
+        </div>
+        <div class="review-meta">
+          <span class="review-author">Ирина П.</span>
+          <span class="review-date">28.02.2023</span>
+        </div>
+        <div class="review-text">
+          Надежный и комфортный автомобиль для города. Расход 8-9 литров, никаких проблем за 2 года эксплуатации. 
+          Салон просторный, но материалы отделки могли бы быть и получше. Отличный вариант за свои деньги.
+        </div>
+        <div class="review-images">
+          <img src="images/70-1.jpg" alt="Lexus RX" class="review-image">
+          <img src="images/kom.jpeg" alt="Lexus RX салон" class="review-image">
+          <img src="images/960.jpg" alt="Lexus RX вид сбоку" class="review-image">
+        </div>
+      </div>
+
+     
+      <div class="review-card">
+        <div class="review-header">
+          <div class="review-car">Porsche 911 Turbo S</div>
+          <div class="review-rating">★★★★★</div>
+        </div>
+        <div class="review-meta">
+          <span class="review-author">Артем Л.</span>
+          <span class="review-date">15.01.2023</span>
+        </div>
+        <div class="review-text">
+          Это не просто автомобиль, это произведение искусства! Разгон до 100 за 2.7 секунды - ощущения как на американских горках. 
+          Управление настолько точное, что кажется, будто автомобиль читает твои мысли. Единственный минус - цена и обслуживание.
+        </div>
+        <div class="review-images">
+          <img src="images/S1.webp" alt="Lexus RX" class="review-image">
+          <img src="images/S2.webp" alt="Lexus RX салон" class="review-image">
+          <img src="images/S3.jpg" alt="Lexus RX вид сбоку" class="review-image">
+        </div>
+      </div>
+
+      
+      <div class="review-card">
+        <div class="review-header">
+          <div class="review-car">Chery Tiggo 8</div>
+          <div class="review-rating">★☆☆☆☆</div>
+        </div>
+        <div class="review-meta">
+          <span class="review-author">Ольга М.</span>
+          <span class="review-date">02.01.2025</span>
+        </div>
+        <div class="review-text">
+          Chery Tiggo 8 Pro — разочарование. Подвеска дубовая, шумоизоляции почти нет, вариатор тупит. Салон скрипит, пластик дешёвый, глянец затирается моментально. Расход топлива — как у танка, при этом едет вяло. За эти деньги — точно не стоит.
+        </div>
+        <div class="review-images">
+          <img src="images/С1.jpg" alt="Lexus RX" class="review-image">
+          <img src="images/C2.jpg" alt="Lexus RX салон" class="review-image">
+          <img src="images//С3.jpg" alt="Lexus RX вид сбоку" class="review-image">
+        </div>
+      </div>
+    </div>
+  </main>
+
+  
+  <footer class="main-footer">
+    <div class="container">
+      <div class="footer-content">
+        <p class="copyright">© 2025 AutoForum. Все права защищены.</p>
+        <div class="social-icons">
+          <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="social-icon"><i class="fab fa-vk"></i></a>
+          <a href="#" class="social-icon"><i class="fab fa-telegram"></i></a>
+          <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // XSS протекшЫн
+    const escapeHTML = str => str.replace(/[&<>'"]/g, 
+      tag => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[tag]));
+
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      const lazyImages = [].slice.call(document.querySelectorAll('img.review-image'));
+      
+      if ('IntersectionObserver' in window) {
+        let lazyImageObserver = new IntersectionObserver(function(entries, observer) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              let lazyImage = entry.target;
+              lazyImage.src = lazyImage.dataset.data-src;
+              lazyImage.classList.remove('lazy');
+              lazyImageObserver.unobserve(lazyImage);
+            }
+          });
+        });
+
+        lazyImages.forEach(function(lazyImage) {
+          lazyImageObserver.observe(lazyImage);
+        });
+      }
+    });
+  </script>
+</body>
+</html>
